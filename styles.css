@@ -1,3 +1,8 @@
+@font-face {
+    font-family: 'Futura PT Demi';
+    src: url('./static/PARATYPE\ -\ FUTURA\ PT\ DEMI.OTF');
+}
+
 svg {
     max-width: 100%;
     max-height: 60%;
@@ -8,7 +13,7 @@ svg {
 body {
     margin: 0;
     padding: 0;
-    background-image: url('./images/Banner.png');
+    background-image: url('./static/Banner.png');
     background-size: cover;
     background-position: center center;
     background-repeat: no-repeat;
