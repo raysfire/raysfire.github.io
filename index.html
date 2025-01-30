@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stream Schedule</title>
+    <link rel="stylesheet" href="styles.css">
+    <script>
+        // Function to move a shape
+        function moveShape(label, dx, dy) {
+            const shapes = [
+                document.getElementById(`shape-${label}`),
+                document.getElementById(`shape-${label}-mask2`),
+                document.getElementById(`shape-${label}-mask3`),
+                document.getElementById(`shadow-shape-${label}`),
+                document.getElementById(`final-shape-${label}`)
+            ].filter(shape => shape !== null);
+
+            shapes.forEach(shape => {
+                shape.setAttribute('transform', `translate(${dx}, ${dy})`);
+            });
+        }
+
+        // Default positions for the shapes
+        const defaultPositions = {
+            'mid': { x: 0, y: 0 },
+            'left': { x: -20, y: 0 },
+            'right': { x: 20, y: 0 }
+        };
+
+        // Current target positions for the shapes
+        let commonPosition = { x: 0, y: 0 };
+        let targetPositions = {
+            'mid': { x: 0, y: 0 },
+            'left': { x: -20, y: 0 },
+            'right': { x: 20, y: 0 }
+        };
+
+        // Smoothed target positions for the shapes (initialized to target positions)
+        let smoothedTargetPositions = {
+            'mid': { x: 0, y: 0 },
+            'left': { x: -20, y: 0 },
+            'right': { x: 20, y: 0 }
+        };
+
+        // Current positions for the shapes (initialized to default positions)
+        let currentPositions = {
+            'mid': { x: 0, y: 0 },
+            'left': { x: -20, y: 0 },
+            'right': { x: 20, y: 0 }
+        };
+
+        // Function to generate a random target position within a certain range
+        function newCommonTarget() {
+            const commonRange = 20;
+            commonPosition.x = Math.random() * commonRange - commonRange / 2;
+            commonPosition.y = Math.random() * commonRange - commonRange / 2;
+        }
+
+        function getRandomTargetPosition(label) {
+            const range = 20; // range within which the shapes can "swim"
+            const defaultPos = defaultPositions[label];
+            return {
+                x: defaultPos.x + commonPosition.x + Math.random() * range - range / 2,
+                y: defaultPos.y + commonPosition.y + Math.random() * range - range / 2
+            };
+        }
+
+        // Function to update target positions periodically
+        function updateTargetPositions() {
+            newCommonTarget();
+            for (let label in targetPositions) {
+                targetPositions[label] = getRandomTargetPosition(label);
+            }
+            setTimeout(updateTargetPositions, 4000); // update every 2 seconds
+        }
+
+        // Easing function for smooth movement
+        function ease(current, target, factor) {
+            return current + (target - current) * factor;
+        }
+
+        // Function to animate shapes
+        function animateShapes() {
+            const easingFactor = 0.02; // smaller value = slower movement, larger value = faster movement
+            const targetEasingFactor = 0.2; // easing factor for target positions
+
+            for (let label in currentPositions) {
+                // Ease the smoothed target positions towards the target positions
+                smoothedTargetPositions[label].x = ease(smoothedTargetPositions[label].x, targetPositions[label].x, targetEasingFactor);
+                smoothedTargetPositions[label].y = ease(smoothedTargetPositions[label].y, targetPositions[label].y, targetEasingFactor);
+
+                // Ease the current positions towards the smoothed target positions
+                currentPositions[label].x = ease(currentPositions[label].x, smoothedTargetPositions[label].x, easingFactor);
+                currentPositions[label].y = ease(currentPositions[label].y, smoothedTargetPositions[label].y, easingFactor);
+
+                moveShape(label, currentPositions[label].x, currentPositions[label].y);
+            }
+            requestAnimationFrame(animateShapes);
+        }
+
+        // Start the animation
+        updateTargetPositions();
+        animateShapes();
+
+        const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQI0KUDZKW9cqPrCbmvGRPxzT8kolOBJ0f1uRK1dgavwKHw4bqk-28VO98u3NILEOaqxalabg_ALDj8/pub?gid=0&single=true&output=csv';
+
+        async function loadSchedule() {
+            try {
+                // If no CORS issues, do a direct fetch; otherwise, add a proxy
+                const response = await fetch(CSV_URL);
+                if (!response.ok) throw new Error('Network response was not ok');
+
+                const csvText = await response.text();
+
+                // Split into rows
+                const allRows = csvText
+                    .split('\n')
+                    .map(r => r.trim())
+                    .filter(r => r !== '');
+
+                // First row is the header
+                const headerRow = allRows[0];
+                const dataRows = allRows.slice(1);
+
+                // We'll store each week's data in an array of objects
+                const weeks = dataRows.map(row => {
+                    // e.g. row = "current,Jan 28 - Feb 4,Tuesday|...,Wednesday|...,etc..."
+                    const cells = row.split(',');
+
+                    return {
+                        id: cells[0],          // e.g. "current" or "week2" etc.
+                        dateRange: cells[1],   // e.g. "Jan 28 - Feb 4, 2025"
+                        day1: cells[2],
+                        day2: cells[3],
+                        day3: cells[4],
+                        day4: cells[5],
+                        day5: cells[6]
+                    };
+                });
+
+                // Now populate the <select> with each week
+                populateWeekDropdown(weeks);
+
+                // Optionally auto-select the "current" week or fallback to first
+                const currentIndex = weeks.findIndex(w => w.id === 'current');
+                if (currentIndex !== -1) {
+                    // If we found a row with id="current", select it
+                    document.getElementById('week-select').selectedIndex = currentIndex;
+                    renderWeek(weeks[currentIndex]);
+                } else if (weeks.length > 0) {
+                    // fallback to the first row
+                    document.getElementById('week-select').selectedIndex = 0;
+                    renderWeek(weeks[0]);
+                } else {
+                    // no data
+                    document.querySelector('.date').textContent = 'No schedule data found!';
+                }
+
+                // Return the weeks array in case we need it elsewhere
+                return weeks;
+
+            } catch (err) {
+                console.error('Error loading schedule:', err);
+                document.querySelector('.date').textContent = 'Error loading schedule :(';
+            }
+        }
+
+        function populateWeekDropdown(weeks) {
+            const select = document.getElementById('week-select');
+            select.innerHTML = ''; // clear any existing options
+
+            weeks.forEach((week, index) => {
+                const option = document.createElement('option');
+                option.value = index;             // store the array index or 'week.id'
+                option.textContent = week.dateRange; // e.g. "Jan 28 - Feb 4, 2025"
+                select.appendChild(option);
+            });
+
+            // Add an event listener so that when user picks a new option,
+            // we call `renderWeek(...)` for that week's data
+            select.addEventListener('change', () => {
+                const selectedIndex = parseInt(select.value, 10);
+                renderWeek(weeks[selectedIndex]);
+            });
+        }
+
+
+        function renderWeek(weekData) {
+            // Update date range
+            document.querySelector('.date').textContent = weekData.dateRange;
+
+            // Build array of day strings
+            const days = [weekData.day1, weekData.day2, weekData.day3, weekData.day4, weekData.day5];
+
+            let html = '';
+            days.forEach(dayString => {
+                // e.g. "Tuesday|Super Mario Party|[BIG] Some description"
+                const [rawDayName = '', rawGameName = '', rawDescription = ''] = dayString.split('|');
+
+                // Copy the raw strings
+                let dayName = rawDayName.trim();
+                let gameName = rawGameName.trim();
+                let description = rawDescription.trim();
+
+                // Check if dayName or gameName contains [BIG]
+                const hasBigInDayName = /\[BIG\]/i.test(dayName);
+                const hasBigInGameName = /\[BIG\]/i.test(gameName);
+                const hasBigInDesc = /\[BIG\]/i.test(description);
+
+                // Default class:
+                let dayClass = 'small-day';
+
+                // Check if No Stream
+                if (gameName.toLowerCase() === 'no stream') {
+                    dayClass = 'no-stream';
+                }
+
+                if (hasBigInDayName) {
+                    // Remove [BIG] (case-insensitive) from dayName
+                    dayName = dayName.replace(/\[BIG\]/gi, '').trim();
+                    dayClass = 'big-day';
+                }
+                if (hasBigInGameName) {
+                    // Remove [BIG] from gameName
+                    gameName = gameName.replace(/\[BIG\]/gi, '').trim();
+                    dayClass = 'big-day';
+                }
+                if (hasBigInDesc) {
+                    // Remove [BIG] from gameName
+                    description = description.replace(/\[BIG\]/gi, '').trim();
+                    dayClass = 'big-day';
+                }
+
+                // Build day HTML
+                html += `
+                <div class="day-container ${dayClass}">
+                    <div class="day-name">${dayName}</div>
+                    <div class="game-name">${gameName}</div>
+                    ${description ? `<div class="stream-description">${description}</div>` : ''}
+                </div>
+                `;
+            });
+
+            // Inject into .main-container
+            document.querySelector('.main-container').innerHTML = html;
+        }
+
+
+        // Call loadSchedule() on page load
+        loadSchedule();
+    </script>
+</head>
+
+<body>
+    <svg id="fire" xmlns="http://www.w3.org/2000/svg" viewBox="-50 -50 680 792">
+        <defs>
+            <style>
+                .cls-left {
+                    fill: rgba(0, 255, 255, 0.5);
+                }
+
+                .cls-mid {
+                    fill: rgba(164, 216, 254, 0.84);
+                }
+
+                .cls-right {
+                    fill: rgba(109, 68, 169, 0.5);
+                }
+            </style>
+            <!-- Define path -->
+            <path id="flame"
+                d="M167.204,291c-33.901,2.774-54-32-54-32,0,0-25.529,32.416-43.815,64.254-45.518,79.255-54.632,131.887-45.185,196.746,10.804,74.184,67.706,117.736,89.706,134.736,0,0-20.392-28.063-28.177-49.481-5.897-16.223-6.528-40.255-6.528-40.255,0,0,32.004,17.947,43.47,22.586,16.641,6.732,30.092,4,36.933,1.72,7.519-2.506,17.682-9.038,17.606-20.278-.082-12.209-12.009-28.027-18.009-36.027s-21.712-25.91-27-46c-6.185-23.499-.105-44.524,17-64,15.896-18.099,41.075-32.22,68.748-42.047,13.985-4.966,39.084-14.9,57.542-29.503,20.946-16.57,44.124-43.879,47.313-83.41,2.783-34.486-16.861-79.519-16.861-79.519,0,0,25.823,33.076,35.256,55.479,13.539,32.154,6.782,75.533-3,99-8.949,21.469-21.855,44.472-33.168,58.559-10.663,13.278-26.601,41.239-26.832,76.441-.282,42.951,29.563,74.522,29.563,74.522,0,0,19.113,3.029,34.834-9.361,17.726-13.97,24.713-34.4,29.308-52.514,4.226-16.661,4.671-42.152,4.671-42.152,0,0,28.481,51.835,34.975,93.19,6.094,38.809,2.051,66.532-12.987,97.063-13.17,26.739-45.911,53.251-45.911,53.251,0,0,98.277-1.121,158.848-78.58,29.962-38.316,58.755-113.448,43.253-199.215-11.457-63.391-44.399-120.739-85.714-171.841-65.236-80.691-112.78-103.779-145.154-174.86-16.085-35.316-11.686-67.503-11.686-67.503,0,0-13.244,16.496-41.022,36.679-42.949,31.206-67.576,72.057-68.402,113.525-.318,15.971,4.928,29.131,13.206,51.57,18.38,49.823-12.759,86.278-48.782,89.226Z" />
+
+            <!-- Define masks -->
+            <mask id="mask1">
+                <rect x="-50%" y="-50%" width="200%" height="200%" fill="black" />
+                <use id="shape-mid" href="#flame" fill="white" transform="translate(0, 0)" />
+            </mask>
+            <mask id="mask2">
+                <rect x="-50%" y="-50%" width="200%" height="200%" fill="black" />
+                <use id="shape-right" href="#flame" fill="white" transform="translate(20, 0)" /> <!-- Middle shape -->
+                <use id="shape-mid-mask2" href="#flame" fill="black" transform="translate(0, 0)" /> <!-- Top shape -->
+            </mask>
+            <mask id="mask3">
+                <rect x="-50%" y="-50%" width="200%" height="200%" fill="black" />
+                <use id="shape-left" href="#flame" fill="white" transform="translate(-20, 0)" /> <!-- Bottom shape -->
+                <use id="shape-right-mask3" href="#flame" fill="black" transform="translate(20, 0)" />
+                <!-- Middle shape -->
+                <use id="shape-mid-mask3" href="#flame" fill="black" transform="translate(0, 0)" /> <!-- Top shape -->
+            </mask>
+
+            <!-- Blur filter for the shadow -->
+            <filter id="blur-filter" x="-50%" y="-50%" width="200%" height="200%">
+                <feGaussianBlur in="SourceGraphic" stdDeviation="10" />
+            </filter>
+
+            <!-- Define mask for the shadow -->
+            <mask id="shadow-mask">
+                <rect x="-50%" y="-50%" width="200%" height="200%" fill="white" />
+                <!-- Union of all shapes -->
+                <use id="shadow-shape-left" href="#flame" fill="black" transform="translate(-20, 0)"
+                    filter="url(#blur-filter)" />
+                <use id="shadow-shape-mid" href="#flame" fill="black" transform="translate(0, 0)"
+                    filter="url(#blur-filter)" />
+                <use id="shadow-shape-right" href="#flame" fill="black" transform="translate(20, 0)"
+                    filter="url(#blur-filter)" />
+            </mask>
+
+            <!-- Mask to cut out the shapes from the blurred shadow -->
+            <mask id="final-shadow-mask">
+                <rect x="-50%" y="-50%" width="200%" height="200%" fill="white" />
+                <rect x="-50%" y="-50%" width="200%" height="200%" fill="black" mask="url(#shadow-mask)" />
+                <use id="final-shape-left" href="#flame" fill="black" transform="translate(-20, 0)" />
+                <use id="final-shape-mid" href="#flame" fill="black" transform="translate(0, 0)" />
+                <use id="final-shape-right" href="#flame" fill="black" transform="translate(20, 0)" />
+            </mask>
+
+        </defs>
+        <!-- Shadow layer -->
+        <rect x="-50%" y="-50%" width="200%" height="200%" fill="black" mask="url(#final-shadow-mask)" />
+
+        <rect x="-50%" y="-50%" width="200%" height="200%" class="cls-mid" mask="url(#mask1)" /> <!-- Center flame -->
+        <rect x="-50%" y="-50%" width="200%" height="200%" class="cls-right" mask="url(#mask2)" /> <!-- Right flame -->
+        <rect x="-50%" y="-50%" width="200%" height="200%" class="cls-left" mask="url(#mask3)" /> <!-- Left flame -->
+    </svg>
+
+    <div class="title">raysfire</div>
+    <div class="date">Schedule Loading...</div>
+    <div class="main-container">
+
+        <div class="day-container">
+            <div class="day-name">Loading Day...</div>
+            <div class="game-name">Loading Game...</div>
+            <div class="stream-description">Loading Description...</div>
+        </div>
+
+        <div class="day-container">
+            <div class="day-name">Loading Day...</div>
+            <div class="game-name">Loading Game...</div>
+            <div class="stream-description">Loading Description...</div>
+        </div>
+
+        <div class="day-container">
+            <div class="day-name">Loading Day...</div>
+            <div class="game-name">Loading Game...</div>
+            <div class="stream-description">Loading Description...</div>
+        </div>
+
+        <div class="day-container">
+            <div class="day-name">Loading Day...</div>
+            <div class="game-name">Loading Game...</div>
+            <div class="stream-description">Loading Description...</div>
+        </div>
+
+        <div class="day-container">
+            <div class="day-name">Loading Day...</div>
+            <div class="game-name">Loading Game...</div>
+            <div class="stream-description">Loading Description...</div>
+        </div>
+
+    </div>
+
+        <!-- A dropdown to pick which week's schedule to view -->
+        <label for="week-select">View Schedule:</label>
+        <select id="week-select"></select>
+</body>
+
+</html>

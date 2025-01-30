@@ -1,0 +1,168 @@
+svg {
+    max-width: 100%;
+    max-height: 60%;
+    position: absolute;
+    z-index: -1;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    background-image: url('./images/Banner.png');
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    /*background: linear-gradient(45deg, #070038, #1a0a4a); */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    color: #ffffff;
+    font-family: -apple-system, BlinkMacSystemFont, 'Futura PT Demi', 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif;
+}
+
+.main-container {
+    display: grid;
+    grid-template-rows: repeat(5, 1fr);
+    background: rgba(0,0,0,0.3);
+    border-radius: 8px;
+    padding: 10px;
+    gap: 10px;
+    width: 90%;
+    max-width: 600px;
+    margin: 20px 0;
+    position: relative;
+    min-height: 400px;
+}
+
+.loading {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 1.5rem;
+    display: none;
+  }
+  
+  .main-container.loading .loading {
+    display: block;
+  }
+
+.title {
+    border-radius: 8px;
+    padding: 10px;
+    width: 90%;
+    font-weight: 800;
+    max-width: 600px;
+    text-align: center;
+    font-size: 36pt;
+    margin-bottom: 5px;
+    text-shadow: 2px 2px 2px black;
+}
+
+.date {
+    background-color: rgba(0,0,0,0.3);
+    border-radius: 8px;
+    padding: 10px;
+    width: 90%;
+    font-weight: 500;
+    max-width: 600px;
+    text-align: center;
+    font-size: 24pt;
+    margin-bottom: 5px;
+    text-shadow: 2px 2px 2px black;
+}
+
+.day-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    background-color: rgba(22, 0, 56, 0.9);
+    box-shadow: 0.1rem 0.1rem 0.3rem 0.0rem rgba(0,0,0,0.6);
+    width: 100%;
+    padding: 15px;
+    box-sizing: border-box;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+    backdrop-filter: blur(2px);
+}
+
+.day-name {
+    font-style: italic;
+    font-size: 16pt;
+    margin-bottom: 5px;
+}
+
+.game-name {
+    font-size: 22pt;
+    line-height: 1.2;
+    margin-bottom: 5px;
+}
+
+.stream-description {
+    font-size: 18pt;
+    opacity: 0.9;
+}
+
+.big-day {
+    color: #fffc00;
+}
+
+.small-day {
+    color: #ffffff;
+}
+
+.no-stream {
+    color: #888;
+}
+
+/* Label styling, if you want it to match */
+label[for="week-select"] {
+    display: inline-block;       /* or block if you want it on its own line */
+    margin: 10px 5px 5px 5px;
+    font-size: 1.2rem;
+    color: #ffffff;
+    text-shadow: 2px 2px 2px black;
+    font-weight: 600;
+  }
+  
+  /* Dropdown (select) styling */
+  #week-select {
+    background-color: rgba(22, 0, 56, 0.7);  /* similar to your .day-container bg */
+    color: #ffffff;
+    border: 4px solid #888;
+    border-radius: 8px;
+    padding: 6px 8px;
+    font-size: 1.1rem;
+    outline: none;
+    cursor: pointer;
+    text-shadow: 1px 1px 2px black;         /* subtle text shadow to match */
+    min-width: 220px;
+  }
+  
+  /* Hover effect */
+  #week-select:hover {
+    background-color: rgba(22, 0, 56, 0.8);
+  }
+  
+  /* Focus outline (when user tabs or clicks into the dropdown) */
+  #week-select:focus {
+    border-color: #fffc00; /* bright highlight color */
+  }
+
+@media screen and (max-width: 480px) {
+    .day-name {
+        font-size: 14pt;
+    }
+    
+    .game-name {
+        font-size: 18pt;
+    }
+    
+    .stream-description {
+        font-size: 14pt;
+    }
+}
