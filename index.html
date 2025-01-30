@@ -122,6 +122,16 @@
 
                 // First row is the header
                 const headerRow = allRows[0];
+
+                // Get the last updated value
+                const headerCells = headerRow.split(',')
+                const lastUpdated = headerCells[7];
+
+                let lastUpdatedHtml = `<div id="last-updated">Last Updated: ${lastUpdated}</div>`
+                document.querySelector('.last-updated').innerHTML = lastUpdatedHtml;
+
+
+                // Separate out actual data values
                 const dataRows = allRows.slice(1);
 
                 // We'll store each week's data in an array of objects
@@ -359,8 +369,8 @@
             <div class="game-name">Loading Game...</div>
             <div class="stream-description">Loading Description...</div>
         </div>
-
     </div>
+    <div class="last-updated">Last Updated: ...</div>
 
         <!-- A dropdown to pick which week's schedule to view -->
         <label for="week-select">View Schedule:</label>

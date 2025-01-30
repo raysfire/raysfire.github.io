@@ -67,6 +67,15 @@ body {
     text-shadow: 2px 2px 2px black;
 }
 
+.last-updated {
+    display: inline-block;
+    margin: 2px;
+    font-size: 1.2rem;
+    color: #ffffff;
+    text-shadow: 2px 2px 2px black;
+    font-weight: 600;
+}
+
 .date {
     background-color: rgba(0,0,0,0.3);
     border-radius: 8px;
