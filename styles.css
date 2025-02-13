@@ -57,13 +57,25 @@ body {
 
 .title {
     border-radius: 8px;
-    padding: 10px;
+    padding: 3px;
     width: 90%;
     font-weight: 800;
     max-width: 600px;
     text-align: center;
     font-size: 36pt;
-    margin-bottom: 5px;
+    margin-bottom: 1px;
+    text-shadow: 2px 2px 2px black;
+}
+
+.stream-time {
+    border-radius: 8px;
+    padding: 3px;
+    width: 90%;
+    font-weight: 400;
+    max-width: 600px;
+    text-align: center;
+    font-size: 16pt;
+    margin-bottom: 10px;
     text-shadow: 2px 2px 2px black;
 }
 
