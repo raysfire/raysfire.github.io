@@ -223,12 +223,10 @@
 
         const streamTime = new Date("2025-02-13T01:30:00.00Z");
         const localTime = streamTime.toLocaleTimeString();
-        console.log(localTime);
         let html = '';
 
         function convertTime() {
             html += `Typically live around ${localTime} every stream day.`;
-            console.log(html);
             document.querySelector('.stream-time').innerHTML = html;
         }
 
