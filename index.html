@@ -254,9 +254,11 @@
 
                 // Get the last updated value
                 const headerCells = headerRow.split(',')
-                const lastUpdated = headerCells[7];
+                const lastUpdated = new Date(headerCells[7]);
+                const localUpdateTime = lastUpdated.toLocaleTimeString();
+                const localUpdateDate = lastUpdated.toLocaleDateString();
 
-                let lastUpdatedHtml = `<div id="last-updated">Last Updated: ${lastUpdated}</div>`
+                let lastUpdatedHtml = `<div id="last-updated">Last Updated: ${localUpdateDate} ${localUpdateTime}</div>`
                 document.querySelector('.last-updated').innerHTML = lastUpdatedHtml;
 
 
