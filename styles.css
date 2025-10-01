@@ -79,6 +79,19 @@ body {
     text-shadow: 2px 2px 2px black;
 }
 
+.announcement {
+    border-radius: 8px;
+    color: red;
+    padding: 3px;
+    width: 90%;
+    font-weight: 400;
+    max-width: 600px;
+    text-align: center;
+    font-size: 16pt;
+    margin-bottom: 10px;
+    text-shadow: 2px 2px 2px black;
+}
+
 .last-updated {
     display: inline-block;
     margin: 2px;
@@ -191,4 +204,153 @@ label[for="week-select"] {
     .stream-description {
         font-size: 14pt;
     }
+}
+
+/* === Announcement page overrides & components === */
+
+/* Use this on the announcement page's <body>: <body class="announcement-page"> */
+body.announcement-page {
+    /* keep your background + font, but don't vertically center long text */
+    justify-content: flex-start;
+    align-items: center;
+    padding-top: 80px; /* breath from top */
+}
+
+/* Optional small brand/link or nav can sit comfortably if you add it later */
+.site-brand {
+    position: fixed;
+    top: 16px;
+    left: 16px;
+    z-index: 5;
+    font-weight: 800;
+    color: #ffffff;
+    text-decoration: none;
+    text-shadow: 2px 2px 2px black;
+    opacity: 0.95;
+}
+.site-brand:hover { opacity: 1; }
+
+/* If you add a simple top nav (e.g., Schedule | October Update) */
+.top-nav {
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    z-index: 5;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    font-size: 12pt;
+    text-shadow: 2px 2px 2px black;
+}
+.top-nav a {
+    color: #ffffff;
+    text-decoration: none;
+    opacity: 0.85;
+}
+.top-nav a:hover { opacity: 1; text-decoration: underline; }
+.top-nav a.active { opacity: 1; font-weight: 700; }
+
+/* Readable card for long-form announcement text */
+.page-container {
+    width: 90%;
+    max-width: 600px;                 /* matches your layout width */
+    background: rgba(0,0,0,0.3);      /* matches .date/.main-container */
+    border-radius: 8px;               /* matches your radius */
+    padding: 15px;                    /* matches .day-container padding */
+    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+    backdrop-filter: blur(2px);       /* matches .day-container */
+    color: #ffffff;
+    text-shadow: 1px 1px 2px black;   /* subtle readability like elsewhere */
+}
+
+/* Title/subtitle inside the announcement page */
+.page-container h1 {
+    margin: 0 0 6px 0;
+    text-align: center;
+    font-weight: 800;
+    font-size: 28pt;                  /* smaller than your 36pt main title */
+    text-shadow: 2px 2px 2px black;
+}
+.page-subtle {
+    margin: 0 0 10px 0;
+    text-align: center;
+    font-size: 12pt;
+    opacity: 0.85;
+    text-shadow: 1px 1px 2px black;
+}
+
+/* Body copy: left-aligned, comfortable line-height, not huge */
+.announcement-content {
+    text-align: left;
+    font-size: 14pt;                  /* smaller than 16–18pt schedule text */
+    line-height: 1.55;
+    opacity: 0.95;
+}
+.announcement-content p { margin: 0 0 12px 0; }
+.announcement-content a {
+    color: #a4d8fe;                   /* readable accent on your palette */
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+
+/* CTA/back link */
+.page-actions { margin-top: 8px; }
+.btn {
+    display: inline-block;
+    padding: 6px 10px;
+    border-radius: 8px;               /* match your radius */
+    background: rgba(164,216,254,0.12);
+    border: 1px solid rgba(164,216,254,0.35);
+    color: #ffffff;
+    text-decoration: none;
+    text-shadow: 1px 1px 2px black;
+}
+.btn:hover { background: rgba(164,216,254,0.18); }
+
+/* Inline teaser for the main page, replacing the giant announcement block */
+.announcement-inline {
+    border-radius: 8px;
+    padding: 3px;
+    width: 90%;
+    max-width: 600px;
+    text-align: center;
+    font-size: 14pt;                  /* smaller than your 16pt to stay subtle */
+    margin-bottom: 10px;
+    color: #ffffff;
+    text-shadow: 2px 2px 2px black;
+    opacity: 0.95;
+}
+.announcement-inline a {
+    color: #a4d8fe;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    margin-left: 4px;
+}
+
+/* Keep SVG behind everything on both pages */
+svg#fire, #fire {
+    position: absolute;
+    inset: 0 auto auto 0;
+    z-index: -1;
+}
+
+/* Mobile tweaks */
+@media screen and (max-width: 480px) {
+    body.announcement-page { padding-top: 64px; }
+    .page-container { padding: 12px; }
+    .page-container h1 { font-size: 22pt; }
+    .announcement-content { font-size: 12pt; line-height: 1.5; }
+}
+
+/* Ensure flame SVG stays centered on all pages */
+#fire, svg#fire {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: auto;
+    height: auto;
+    max-width: 100%;
+    max-height: 60%;
+    z-index: -1;
 }

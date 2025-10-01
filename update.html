@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>raysfire — October Update</title>
+
+  <!-- Social tags (optional tweak per-page) -->
+  <meta property="og:url" content="https://schedule.raysfire.com/announcement.html">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="raysfire — October Update">
+  <meta property="og:description" content="Details on October schedule changes and why I'm trying a new workflow.">
+  <meta property="og:image" content="https://storage.googleapis.com/raysfire-schedule-preview-images/preview.png">
+  <meta property="og:site_name" content="raysfire schedule">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="raysfire — October Update">
+  <meta name="twitter:description" content="Details on October schedule changes and why I'm trying a new workflow.">
+  <meta name="twitter:image" content="https://storage.googleapis.com/raysfire-schedule-preview-images/preview.png">
+  <meta name="twitter:image:alt" content="Schedule image">
+
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <!-- Same flame background SVG (unchanged) -->
+  <svg id="fire" xmlns="http://www.w3.org/2000/svg" viewBox="-50 -50 680 792" aria-hidden="true">
+    <defs>
+      <style>
+        .cls-left { fill: rgba(0, 255, 255, 0.5); }
+        .cls-mid  { fill: rgba(164, 216, 254, 0.84); }
+        .cls-right{ fill: rgba(109, 68, 169, 0.5); }
+      </style>
+      <path id="flame" d="M167.204,291c-33.901,2.774-54-32-54-32,0,0-25.529,32.416-43.815,64.254-45.518,79.255-54.632,131.887-45.185,196.746,10.804,74.184,67.706,117.736,89.706,134.736,0,0-20.392-28.063-28.177-49.481-5.897-16.223-6.528-40.255-6.528-40.255,0,0,32.004,17.947,43.47,22.586,16.641,6.732,30.092,4,36.933,1.72,7.519-2.506,17.682-9.038,17.606-20.278-.082-12.209-12.009-28.027-18.009-36.027s-21.712-25.91-27-46c-6.185-23.499-.105-44.524,17-64,15.896-18.099,41.075-32.22,68.748-42.047,13.985-4.966,39.084-14.9,57.542-29.503,20.946-16.57,44.124-43.879,47.313-83.41,2.783-34.486-16.861-79.519-16.861-79.519,0,0,25.823,33.076,35.256,55.479,13.539,32.154,6.782,75.533-3,99-8.949,21.469-21.855,44.472-33.168,58.559-10.663,13.278-26.601,41.239-26.832,76.441-.282,42.951,29.563,74.522,29.563,74.522,0,0,19.113,3.029,34.834-9.361,17.726-13.97,24.713-34.4,29.308-52.514,4.226-16.661,4.671-42.152,4.671-42.152,0,0,28.481,51.835,34.975,93.19,6.094,38.809,2.051,66.532-12.987,97.063-13.17,26.739-45.911,53.251-45.911,53.251,0,0,98.277-1.121,158.848-78.58,29.962-38.316,58.755-113.448,43.253-199.215-11.457-63.391-44.399-120.739-85.714-171.841-65.236-80.691-112.78-103.779-145.154-174.86-16.085-35.316-11.686-67.503-11.686-67.503,0,0-13.244,16.496-41.022,36.679-42.949,31.206-67.576,72.057-68.402,113.525-.318,15.971,4.928,29.131,13.206,51.57,18.38,49.823-12.759,86.278-48.782,89.226Z"/>
+      <mask id="mask1"><rect x="-50%" y="-50%" width="200%" height="200%" fill="black"/><use href="#flame" fill="white" transform="translate(0, 0)"/></mask>
+      <mask id="mask2"><rect x="-50%" y="-50%" width="200%" height="200%" fill="black"/><use href="#flame" fill="white" transform="translate(20, 0)"/><use href="#flame" fill="black" transform="translate(0, 0)"/></mask>
+      <mask id="mask3"><rect x="-50%" y="-50%" width="200%" height="200%" fill="black"/><use href="#flame" fill="white" transform="translate(-20, 0)"/><use href="#flame" fill="black" transform="translate(20, 0)"/><use href="#flame" fill="black" transform="translate(0, 0)"/></mask>
+      <filter id="blur-filter" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur in="SourceGraphic" stdDeviation="10"/></filter>
+      <mask id="shadow-mask">
+        <rect x="-50%" y="-50%" width="200%" height="200%" fill="white"/>
+        <use href="#flame" fill="black" transform="translate(-20, 0)" filter="url(#blur-filter)"/>
+        <use href="#flame" fill="black" transform="translate(0, 0)" filter="url(#blur-filter)"/>
+        <use href="#flame" fill="black" transform="translate(20, 0)" filter="url(#blur-filter)"/>
+      </mask>
+      <mask id="final-shadow-mask">
+        <rect x="-50%" y="-50%" width="200%" height="200%" fill="white"/>
+        <rect x="-50%" y="-50%" width="200%" height="200%" fill="black" mask="url(#shadow-mask)"/>
+        <use href="#flame" fill="black" transform="translate(-20, 0)"/>
+        <use href="#flame" fill="black" transform="translate(0, 0)"/>
+        <use href="#flame" fill="black" transform="translate(20, 0)"/>
+      </mask>
+    </defs>
+
+    <rect x="-50%" y="-50%" width="200%" height="200%" fill="black" mask="url(#final-shadow-mask)"/>
+    <rect x="-50%" y="-50%" width="200%" height="200%" class="cls-mid"   mask="url(#mask1)"/>
+    <rect x="-50%" y="-50%" width="200%" height="200%" class="cls-right" mask="url(#mask2)"/>
+    <rect x="-50%" y="-50%" width="200%" height="200%" class="cls-left"  mask="url(#mask3)"/>
+  </svg>
+
+  <!-- Optional site title in corner (matches your main page) -->
+  <a class="site-brand" href="index.html" aria-label="Back to schedule">raysfire</a>
+
+  <!-- Slim top nav -->
+  <nav class="top-nav">
+    <a href="index.html">Schedule</a>
+    <span aria-hidden="true">•</span>
+    <a class="active" href="update.html">October Update</a>
+  </nav>
+
+  <!-- Readable announcement container -->
+  <main class="page-container">
+    <h1>October Update</h1>
+    <p class="page-subtle">Posted September 30, 2025</p>
+
+    <div class="announcement-content">
+      <p><strong>In the month of October</strong>, I plan to make some big shifts to how I approach content, which will greatly change how I handle streams. I will no longer be doing a guaranteed Tues/Wed/Fri/Sat split, but still plan on going live at least 1x a week with a content stream, plan on starting up the CPU League on Saturdays (probably starting 10/11/25?), and will also try to stream at least one other day during the week doing miscellaneous other things, such as speedruns, randomizers with friends, or other games/content. Streams will also have a variable start time and length, but will usually still typically happen in the late afternoon/early evening hours.</p>
+
+      <p>The primary reason behind this shift is that the current system is no longer working for both me or my audience. Numbers are down across the board on Twitch, YT, and elsewhere, and a large part of it is due to burnout on my end. This has slowed workflow on everything considerably, made it difficult to feel fully prepared for cool ideas I have (leading to half-baked streams that never reach their full potential), and has even driven me to lose excitement for going live on days I don't feel fully ready. I plan on using this month to experiment with a new workflow, find out what works for me and my community, and get other parts of my life in order as well so I can focus on delivering content I can be proud of and really enjoy rather than just scrambling weekly to hit a quota I gave myself even if I'm mentally not there.</p>
+
+      <p><strong>What this will look like for you (the viewer)</strong>, and this website, is a bit more spontaneity, a slight reduction in stream frequency, and maybe a slightly harder to track schedule. I will still try to update the schedule once I know for a fact that I have something planned, but since my goal in this whole thing is feeling less obligated to force myself to be live on certain days of the week, it will definitely be less useful. If you don't want to miss a stream, I would heavily recommend you join my <a href="https://discord.gg/raysfire">Discord</a> and enable notifications for when I go live, or make sure that you have your notifications enabled on Twitch.</p>
+
+      <p><strong>This will be a TEMPORARY adjustment</strong> specifically for this month. If it ends up being significantly better for me and things are moving in the right direction again, I might shift to this through the end of the year just to see how it feels in a longer timespan, but if it feels bad or unsustainable, I will return to a normal schedule beginning again in November.</p>
+    </div>
+
+    <div class="page-actions">  
+      <a class="btn" href="index.html">← Back to Schedule</a>
+    </div>
+  </main>
+
+</body>
+</html>
